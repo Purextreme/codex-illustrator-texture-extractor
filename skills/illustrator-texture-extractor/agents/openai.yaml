@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustrator Texture Extractor"
+  short_description: "Export complete transparent surface textures from Illustrator"
+  default_prompt: "Use $illustrator-texture-extractor to export one complete transparent model texture per product surface from the open Illustrator document."
