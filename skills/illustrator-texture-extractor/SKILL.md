@@ -21,7 +21,7 @@ Use the product construction outline to establish the transparent canvas and reg
 - Preserve the source document. Inspect first, duplicate selected objects into temporary documents, and never save the source unless explicitly requested.
 - Identify product-applied graphics semantically and spatially. Annotation colors are clues, not a reliable selection rule.
 - Preserve compound paths and complete top-level objects so counters and holes remain intact.
-- Export from vectors at the requested pixel size. Never enlarge a low-resolution bitmap afterward.
+- Default the exported texture's long edge to 2560 pixels unless the user specifies another size. Set Illustrator's export scale before rasterization and export directly from vectors; do not resize the raster output to meet the target size. Correct pixel-rounding errors by re-exporting from vectors.
 - Use PNG24 with transparency enabled, matte disabled, and artboard clipping enabled.
 - Verify every output's pixel dimensions, alpha channel, painted bounds, cropping, orientation, grouping, and visible content.
 - Disabling `ShowExternalJSXWarning` changes a global Illustrator preference. Do it only with explicit authorization and state that it remains disabled until restored.

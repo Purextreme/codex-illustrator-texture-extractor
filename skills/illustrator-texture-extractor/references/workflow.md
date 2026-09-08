@@ -79,7 +79,7 @@ For each surface:
 3. Duplicate only the selected top-level marking items into its active layer.
 4. Measure one source item before duplication and its copy after duplication. Illustrator may translate coordinates between documents.
 5. Map the source surface rectangle by that translation and use the mapped rectangle as the temporary artboard.
-6. Export PNG24 with transparency and artboard clipping.
+6. Set the export scale for the target long edge (2560 pixels by default, or the user's explicit size) before exporting PNG24 with transparency and artboard clipping.
 7. Close the temporary document with `SaveOptions.DONOTSAVECHANGES` and reactivate the source.
 
 Coordinate mapping pattern:
@@ -99,10 +99,13 @@ var artRect = [
 tempDoc.artboards[0].artboardRect = artRect;
 ```
 
-Compute direct vector export scale:
+Compute the scale before rasterization, using the final temporary artboard dimensions. Apply the same scale to both axes to preserve aspect ratio:
 
-```text
-scalePercent = targetLongEdgePx / artboardLongEdgePt * 100
+```jsx
+var targetLongEdgePx = 2560; // Replace only when the user specifies another size.
+var artRect = tempDoc.artboards[0].artboardRect;
+var artboardLongEdgePt = Math.max(artRect[2] - artRect[0], artRect[1] - artRect[3]);
+var scalePercent = targetLongEdgePx / artboardLongEdgePt * 100;
 ```
 
 Use:
@@ -128,13 +131,13 @@ Illustrator can miss the requested long edge by several pixels, especially on na
 correctedScalePercent = originalScalePercent * targetPx / actualPx
 ```
 
-This is a second vector rasterization, not bitmap resizing.
+This is a second vector rasterization, not bitmap resizing. Do not downsample or enlarge the exported texture to meet the target, including to correct rounding. Resized copies are allowed only for preview thumbnails; keep the delivered texture at its direct vector-export resolution.
 
 ## 8. Verify every output
 
 Numerically verify:
 
-- exact requested long edge;
+- exact target long edge (2560 pixels by default, or the user's explicit size);
 - RGBA mode and alpha extrema containing transparent and visible pixels;
 - painted alpha bounds and edge clearances;
 - no clipping at outermost painted pixels.
@@ -148,6 +151,10 @@ Visually verify on a checkerboard contact sheet and at original resolution:
 
 A viewer may display transparent pixels as black. Confirm alpha numerically rather than inferring transparency from the viewer background.
 
+After the outputs pass QA, generate a compact checkerboard contact-sheet thumbnail for delivery, including for a single texture. Keep it separate from the transparent texture files.
+
 ## 9. Report
 
 Link each PNG and state exact dimensions. Identify surfaces and manufacturing processes when known. State that the source was not saved and temporary documents were closed. If a candidate is ambiguous, export it separately and label it as a candidate instead of silently merging it into a confirmed texture.
+
+Embed the checked contact-sheet thumbnail and include a direct output-folder link alongside the PNG links.
