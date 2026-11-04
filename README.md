@@ -23,38 +23,43 @@
 
 ```text
 .
+|-- SKILL.md
 |-- README.md
 |-- LICENSE
 |-- requirements.txt
-`-- skills/
-    `-- illustrator-texture-extractor/
-        |-- SKILL.md
-        |-- agents/openai.yaml
-        |-- improvements/
-        |   |-- RULES.md
-        |   `-- pending/
-        |-- references/workflow.md
-        `-- scripts/
-            |-- illustrator_com_runner.vbs
-            |-- inspect_png_alpha.py
-            `-- make_contact_sheet.py
+|-- agents/openai.yaml
+|-- improvements/
+|   |-- RULES.md
+|   `-- pending/
+|-- references/workflow.md
+`-- scripts/
+    |-- illustrator_com_runner.vbs
+    |-- inspect_png_alpha.py
+    `-- make_contact_sheet.py
 ```
 
 ## 安装
 
-克隆仓库后，将 `skills/illustrator-texture-extractor` 的内容复制到本机 Codex Skills 目录：
+将仓库直接克隆到本机 Codex Skills 目录。若该位置已有手动安装的副本，先将它移到别处备份。
 
 ```powershell
-$source = Resolve-Path '.\skills\illustrator-texture-extractor'
-$destination = Join-Path $env:USERPROFILE '.codex\skills\illustrator-texture-extractor'
-New-Item -ItemType Directory -Force -Path $destination | Out-Null
-Copy-Item -Path (Join-Path $source '*') -Destination $destination -Recurse -Force
+$skillPath = Join-Path $env:USERPROFILE '.codex\skills\illustrator-texture-extractor'
+git clone https://github.com/Purextreme/codex-illustrator-texture-extractor.git $skillPath
 ```
 
 重启 Codex 后即可自动发现，也可以显式调用：
 
 ```text
 使用 $illustrator-texture-extractor，从当前 Illustrator 文档提取全部产品表面贴图，透明 PNG，长边 2560。
+```
+
+## 维护
+
+已安装的 Skill 目录就是 Git 工作区。直接在这里编辑和提交，提交后推送到 GitHub。
+
+```powershell
+git -C $skillPath status
+git -C $skillPath push origin main
 ```
 
 ## 环境
